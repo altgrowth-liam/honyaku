@@ -2,30 +2,27 @@ import dotenv from 'dotenv'
 import { AtpAgent, BlobRef } from '@atproto/api'
 import fs from 'fs/promises'
 import { ids } from '../src/lexicon/lexicons'
+import { FEEDGEN_HOSTNAME, FEEDGEN_PUBLISHER_DID } from '../src/index'
 
 const run = async () => {
   dotenv.config()
 
-  // YOUR bluesky handle
-  // Ex: user.bsky.social
-  const handle = ''
-
-  // YOUR bluesky password, or preferably an App Password (found in your client settings)
-  // Ex: abcd-1234-efgh-5678
-  const password = ''
+  // THESE TWO SHOULD BE FILLED OUT IN .env
+  const handle = process.env.HANDLE ?? ''
+  const password = process.env.APP_PASSWORD ?? ''
 
   // A short name for the record that will show in urls
   // Lowercase with no spaces.
-  // Ex: whats-hot
-  const recordName = ''
+  // <15 characters
+  const recordName = 'hack-bluesky'
 
   // A display name for your feed
   // Ex: What's Hot
-  const displayName = ''
+  const displayName = 'Hackathon Test'
 
   // (Optional) A description of your feed
   // Ex: Top trending content from the whole network
-  const description = ''
+  const description = 'Showing posts with #hack-bluesky'
 
   // (Optional) The path to an image to be used as your feed's avatar
   // Ex: ~/path/to/avatar.jpeg
@@ -35,11 +32,10 @@ const run = async () => {
   // NO NEED TO TOUCH ANYTHING BELOW HERE
   // -------------------------------------
 
-  if (!process.env.FEEDGEN_SERVICE_DID && !process.env.FEEDGEN_HOSTNAME) {
+  if (!FEEDGEN_PUBLISHER_DID && !FEEDGEN_HOSTNAME) {
     throw new Error('Please provide a hostname in the .env file')
   }
-  const feedGenDid =
-    process.env.FEEDGEN_SERVICE_DID ?? `did:web:${process.env.FEEDGEN_HOSTNAME}`
+  const feedGenDid = `did:web:${FEEDGEN_HOSTNAME}`
 
   // only update this if in a test environment
   const agent = new AtpAgent({ service: 'https://bsky.social' })

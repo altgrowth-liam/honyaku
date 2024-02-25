@@ -1,28 +1,32 @@
 import dotenv from 'dotenv'
 import FeedGenerator from './server'
 
+// SET THIS TO YOUR DID
+// You can find your accounts DID by going to
+// https://bsky.social/xrpc/com.atproto.identity.resolveHandle?handle=${YOUR_HANDLE}
+export const FEEDGEN_PUBLISHER_DID = 'did:plc:f4ldthcc2n5d2bfmukvd5pwx'
+export const FEEDGEN_HOSTNAME = 'TODO'
+
 const run = async () => {
   dotenv.config()
-  const hostname = maybeStr(process.env.FEEDGEN_HOSTNAME) ?? 'example.com'
-  const serviceDid =
-    maybeStr(process.env.FEEDGEN_SERVICE_DID) ?? `did:web:${hostname}`
+  const hostname = FEEDGEN_HOSTNAME
+  const serviceDid = FEEDGEN_PUBLISHER_DID
   const server = FeedGenerator.create({
-    port: maybeInt(process.env.FEEDGEN_PORT) ?? 3000,
-    listenhost: maybeStr(process.env.FEEDGEN_LISTENHOST) ?? 'localhost',
+    port: maybeInt(process.env.PORT) ?? 80,
+    listenhost: FEEDGEN_HOSTNAME,
     sqliteLocation: maybeStr(process.env.FEEDGEN_SQLITE_LOCATION) ?? ':memory:',
     subscriptionEndpoint:
       maybeStr(process.env.FEEDGEN_SUBSCRIPTION_ENDPOINT) ??
       'wss://bsky.network',
-    publisherDid:
-      maybeStr(process.env.FEEDGEN_PUBLISHER_DID) ?? 'did:example:alice',
+    publisherDid: FEEDGEN_PUBLISHER_DID,
     subscriptionReconnectDelay:
       maybeInt(process.env.FEEDGEN_SUBSCRIPTION_RECONNECT_DELAY) ?? 3000,
     hostname,
-    serviceDid,
+    serviceDid: `did:web:${FEEDGEN_HOSTNAME}`,
   })
   await server.start()
   console.log(
-    `🤖 running feed generator at http://${server.cfg.listenhost}:${server.cfg.port}`,
+    `🤖 running feed generator at ${server.cfg.listenhost}:${server.cfg.port}`,
   )
 }
 
