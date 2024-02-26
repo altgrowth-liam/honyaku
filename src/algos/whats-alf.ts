@@ -58,8 +58,8 @@ export const handler = async (ctx: AppContext, params: QueryParams) => {
 
   const agent = new BskyAgent({ service: 'https://bsky.social' })
   await agent.login({
-    identifier: process.env.BSKY_IDENTIFIER!,
-    password: process.env.BSKY_PASSWORD!
+    identifier: process.env.IDENTIFIER_BSKY!,
+    password: process.env.PASSWORD_BSKY!
   })
 
   // reply to original post with translated text
